@@ -203,7 +203,7 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
   const CLIENT_ID = process.env.CLIENT_ID;
-  const SCOPES = process.env.SCOPES;
+  const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
   const CALENDAR_ID = process.env.CALENDAR_ID;
 
   let tokenClient;
