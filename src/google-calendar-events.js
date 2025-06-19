@@ -1,3 +1,39 @@
+const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
+const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
+const CALENDAR_ID = import.meta.env.VITE_CALENDAR_ID;
+
+let tokenClient;
+let accessToken;
+
+/* ---------- Init Google OAuth Client ---------- */
+window.onload = () => {
+    tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        callback: '',
+    });
+};
+
+/* ---------- OAuth ---------- */
+function requestAccessToken() {
+    return new Promise((resolve, reject) => {
+        tokenClient.callback = (tokenResponse) => {
+            if (tokenResponse.error) {
+                reject(tokenResponse);
+            } else {
+                accessToken = tokenResponse.access_token;
+                resolve(accessToken);
+            }
+        };
+        tokenClient.requestAccessToken();
+    });
+}
+
+function getNextDate(dateStr) {
+    const d = new Date(dateStr);
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+}
 
   export async function findEvent(summary, date) {
     if (!accessToken) await requestAccessToken();
@@ -47,7 +83,9 @@
   }
 
  export async function addEventIfNotExists(summary, date) {
-    try {
+     if (!accessToken) await requestAccessToken();
+
+     try {
       const events = await findEvent(summary, date);
       if (events.length > 0) return 'אירוע קיים';
       await addEventToCalendar(summary, date);
