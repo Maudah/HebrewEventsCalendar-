@@ -181,7 +181,9 @@
             min="0"
             max="200"
             step="1"
-            oninput="validateYears(this)"
+            oninput="(input) =>{if (input.value < 0) input.value = 0;
+                                  if (input.value > 200) input.value = 200;
+                                  input.value = Math.floor(input.value);}"
             required
     />
     <label for="actionType">בחר פעולה</label>
